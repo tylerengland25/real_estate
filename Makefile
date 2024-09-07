@@ -26,4 +26,4 @@ setup_venv:
 .PHONY: venv
 venv: setup_venv
 	@$(BACKEND_PATH)/$(VENV)/bin/$(PIP) install -r $(BACKEND_PATH)/$(REQUIREMENTS)
-	$source $(BACKEND_PATH)/$(VENV)/bin/activate
+	source $(BACKEND_PATH)/$(VENV)/bin/activate
