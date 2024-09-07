@@ -12,17 +12,21 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  help            Show this help message"
-	@echo "  venv            Create and activate virtual environment"
+	@echo "  setup            Create and activate virtual environment"
 
 # Create virtual environment
-.PHONY: setup_venv
-setup_venv:
+.PHONY: venv
+venv:
 	@if [ ! -d $(VENV) ]; then \
 		$(PYTHON) -m venv $(BACKEND_PATH)/$(VENV); \
 	fi
 	@$(BACKEND_PATH)/$(VENV)/bin/$(PIP) install --upgrade pip
+	@$(BACKEND_PATH)/$(VENV)/bin/$(PIP) install -r $(BACKEND_PATH)/$(REQUIREMENTS)
+
+.PHONY: pre-commit
+pre-commit: venv
+	@$(BACKEND_PATH)/$(VENV)/bin/pre-commit install
 
 # Install dependencies
-.PHONY: venv
-venv: setup_venv
-	@$(BACKEND_PATH)/$(VENV)/bin/$(PIP) install -r $(BACKEND_PATH)/$(REQUIREMENTS)
+.PHONY: setup
+setup: venv pre-commit
