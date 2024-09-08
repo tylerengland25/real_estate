@@ -10,3 +10,11 @@ repos:
     rev: 24.8.0
     hooks:
       - id: black
+  - repo: local
+    hooks:
+    - id: pylint
+      name: pylint
+      entry: ./venv/bin/pylint
+      language: system
+      types: [python]
+      args: [--ignore-patterns=venv]
