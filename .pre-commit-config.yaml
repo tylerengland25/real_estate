@@ -17,4 +17,3 @@ repos:
       entry: pylint
       language: system
       types: [python]
-      args: [--ignore-patterns=venv]
