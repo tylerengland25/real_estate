@@ -8,7 +8,7 @@ Classes:
     APIConfig: A configuration class for API settings, including base URL, endpoint, headers, and parameters.
 """
 
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 import boto3
 
 
