@@ -1,49 +1,48 @@
-import boto3
+"""
+configs.py
+
+This module contains configuration classes and functions for setting up AWS services.
+
+Classes:
+    AWSConfig: A configuration class for AWS settings, including access keys, region, and DynamoDB client.
+    APIConfig: A configuration class for API settings, including base URL, endpoint, headers, and parameters.
+"""
+
 from typing import Optional, Dict, Any
+import boto3
+
 
 class AWSConfig:
     """
     Configuration class for AWS settings.
 
     Attributes:
-        access_key (str): AWS access key.
-        secret_key (str): AWS secret key.
-        region (str): AWS region.
-        db_name (str): Name of the database.
-        table_name (str): Name of the table.
+        config (Dict[str, Any]): Configuration dictionary containing AWS settings.
         client (boto3.client): Boto3 client for DynamoDB.
     """
 
-    def __init__(self, access_key: str, secret_key: str, region: str, db_name: str, table_name: str) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """
-        Initializes the AWSConfig class with the provided parameters.
+        Initializes the AWSConfig class with the provided configuration dictionary.
 
         Args:
-            access_key (str): AWS access key.
-            secret_key (str): AWS secret key.
-            region (str): AWS region.
-            db_name (str): Name of the database.
-            table_name (str): Name of the table.
+            config (Dict[str, Any]): Configuration dictionary containing AWS settings.
         """
-        self.access_key = access_key
-        self.secret_key = secret_key
-        self.region = region
-        self.db_name = db_name
-        self.table_name = table_name
-        self.client = self._create_client()
+        self._config = config
+        self.client = self._creat_client()
 
-    def _create_client(self) -> boto3.client:
+    def _creat_client(self) -> boto3.client:
         """
-        Creates a Boto3 client for DynamoDB.
+        Creates and returns a Boto3 client for DynamoDB.
 
         Returns:
             boto3.client: Boto3 client for DynamoDB.
         """
         return boto3.client(
-            'dynamodb',
-            aws_access_key_id=self.access_key,
-            aws_secret_access_key=self.secret_key,
-            region_name=self.region
+            "dynamodb",
+            aws_access_key_id=self._config["access_key"],
+            aws_secret_access_key=self._config["secret_key"],
+            region_name=self._config["region"],
         )
 
     def get_client(self) -> boto3.client:
@@ -55,31 +54,37 @@ class AWSConfig:
         """
         return self.client
 
+    def update_config(self, config: Dict[str, Any]) -> None:
+        """
+        Updates the configuration dictionary with the provided configuration dictionary.
+
+        Args:
+            config (Dict[str, Any]): Configuration dictionary containing AWS settings.
+        """
+        self._config.update(config)
+
+
 class APIConfig:
     """
     Configuration class for API settings.
 
     Attributes:
-        base_url (str): Base URL of the API.
-        endpoint (str): API endpoint.
-        headers (Optional[Dict[str, str]]): Headers for the API request.
-        params (Optional[Dict[str, Any]]): Parameters for the API request.
+        config (Dict[str, Any]): Configuration dictionary containing API settings.
     """
 
-    def __init__(self, base_url: str, endpoint: str, headers: Optional[Dict[str, str]] = None, params: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """
-        Initializes the APIConfig class with the provided parameters.
+        Initializes the APIConfig class with the provided configuration dictionary.
 
         Args:
-            base_url (str): Base URL of the API.
-            endpoint (str): API endpoint.
-            headers (Optional[Dict[str, str]]): Headers for the API request.
-            params (Optional[Dict[str, Any]]): Parameters for the API request.
+            config (Dict[str, Any]): Configuration dictionary containing API settings.
+                Expects the following keys:
+                    - base_url (str): Base URL for the API.
+                    - endpoint (str): Endpoint for the API.
+                    - headers (Dict[str, str]): Headers for the API request.
+                    - params (Dict[str, str]): Parameters for the API request.
         """
-        self.base_url = base_url
-        self.endpoint = endpoint
-        self.headers = headers
-        self.params = params
+        self._config = config
 
     def get_full_url(self) -> str:
         """
@@ -88,4 +93,22 @@ class APIConfig:
         Returns:
             str: Full URL for the API request.
         """
-        return f"{self.base_url}/{self.endpoint}"
+        return f"{self._config['base_url']}/{self._config['endpoint']}"
+
+    def get_headers(self) -> Dict[str, str]:
+        """
+        Returns the headers for the API request.
+
+        Returns:
+            Dict[str, str]: Headers for the API request.
+        """
+        return self._config["headers"]
+
+    def get_params(self) -> Dict[str, str]:
+        """
+        Returns the parameters for the API request.
+
+        Returns:
+            Dict[str, str]: Parameters for the API request.
+        """
+        return self._config["params"]
