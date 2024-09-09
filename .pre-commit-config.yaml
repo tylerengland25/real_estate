@@ -14,8 +14,10 @@ repos:
           "--in-place",
           "--recursive",
           "--black",
-          "--wrap-summaries=80",
-          "--wrap-descriptions=80",
+          "--force-wrap",
+          "--wrap-summaries 80",
+          "--wrap-descriptions 80",
+          "--pre-summary-newline",
         ]
   - repo: https://github.com/psf/black
     rev: 24.8.0
